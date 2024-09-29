@@ -25,7 +25,7 @@ users_table = Table('users', metadata,
 cars_table = Table('cars', metadata,
                    Column('id', Integer, primary_key=True),
                    Column('name', String(250)),
-                   Column('user', Integer, ForeignKey('users.id'))
+                   Column('user_id', Integer, ForeignKey('users.id'))
                    )
 
 
@@ -35,11 +35,19 @@ mapper_registry.map_imperatively(
     properties={
         'things': relationship(
             Car,
+            back_populates='user'
         )
     }
 )
 
-mapper_registry.map_imperatively(Car, cars_table)
+mapper_registry.map_imperatively(
+    Car, 
+    cars_table, 
+    properties={
+        'user': relationship(
+            User,
+            back_populates='things')
+    })
 
 user = User('Hussam', 'o.hussam@gmail.com')
 user.add_thing(Car(name="Ford"))
